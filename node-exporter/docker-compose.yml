@@ -1,0 +1,19 @@
+# node-exporter 를 실행하기 위한 docker-compose 설정파일입니다.
+#
+# 참고자료
+# - https://github.com/prometheus/node_exporter
+
+services:
+  node_exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+    network_mode: "host" # It serves on tcp port 9100.
