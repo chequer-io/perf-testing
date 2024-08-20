@@ -60,9 +60,9 @@ Prometheus Server 가 올바르게 작동하기 위해서는, 제공되는 prome
 
 Prometheus 의 Management API 를 이용해, 실행상태를 검사하고, 재시작할 수 있습니다. `prometheus.yml`을
 변경한 후, docker-compose down, docker-compose up 을 수행하지 않고, 재시작 API 를 호출하는 것을
-권장합니다. docker-compose down 을 수행하는 경우, 수집된 데이터가 보관된 Volume 이 삭제되어, 지표 데이터를
-잃어버리게 됩니다. 재시작 API 를 호출하는 경우, 수집된 데이터가 보관된 Volume 을 유지한 상태로, Server Process
-를 재시작하여 변경된 설정을 반영하게 됩니다.
+권장합니다. docker-compose down 을 수행하는 경우, 일시적으로 지표 데이터 수집이 멈추게 되어, 지표 데이터를
+부분적으로 잃어버리게 됩니다. 재시작 API 를 호출하는 경우, Server Process 를 짧은 시간에 재시작하여, 
+지표 데이터 유실을 최소화하는 동시에, 변경된 설정을 반영하게 됩니다.
 [Management API Reference](https://prometheus.io/docs/prometheus/latest/management_api/)
 를 참고하세요.
 
@@ -82,7 +82,27 @@ Prometheus 의 Management API 를 이용해, 실행상태를 검사하고, 재�
 
 ## Grafana
 
-TODO(JK)
+Prometheus 가 수집한 지표를 Dashboard 형태로 시각화하는 웹서비스를 제공합니다.
+기본 제공되는 설정파일을 변경하지 않고, 곧바로 docker container 를 실행하여 사용할 수 있습니다.
+
+처음 설치하여 실행하는 경우, [grafana.ini](grafana/etc/grafana/grafana.ini) 파일에 설정된 admin 계정의
+Username, password 를 이용해 접속합니다. 허락되지 않은 이용자의 접근을 차단하기 위해, 처음 접속 후, 
+새로운 계정을 생성하거나, admin 계정의 비밀번호를 변경하여 사용하는 것을 권장합니다.
+
+빠른 설정을 위해, Prometheus Data Source 설정을 기본으로 제공합니다. 추가적인 설정 없이, 곧바로 데이터를
+조회할 수 있습니다.
+
+3가지 Dashboard 설정을 기본으로 제공합니다.
+- querypie-dac-k6 는 성능테스트 결과를 살펴보기 위해 구성한 Dashboard 입니다.
+- node-exporter-server-metrics-v2, node-exporter-full 은 리눅스 시스템의 자원 이용 지표를
+  살펴보기에 편리한 Dashboard 이며, Grafana Labs 에서 제공되는 공개된 Dashboard 를 옮겨온 것입니다.
+
+- 실행하기
+  - cd grafana
+  - docker-compose up --detach
+- 종료하기
+  - cd grafana
+  - docker-compose down
 
 # 참고자료
 
