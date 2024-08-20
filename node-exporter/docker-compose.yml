@@ -5,7 +5,8 @@
 
 services:
   node_exporter:
-    image: prom/node-exporter
+    # v1.8.2 은 정상 작동을 검증한 버전입니다. 이후 버전을 사용해도 될 것으로 예상합니다.
+    image: prom/node-exporter:v1.8.2
     container_name: node_exporter
     restart: unless-stopped
     volumes:
@@ -16,4 +17,6 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
-    network_mode: "host" # It serves on tcp port 9100.
+    ports:
+      - '9100:9100'
+    network_mode: 'host'

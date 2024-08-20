@@ -1,0 +1,35 @@
+# Main configuration of Prometheus server.
+
+# 참고자료
+# - https://prometheus.io/docs/prometheus/latest/getting_started/
+
+global:
+  scrape_interval: 5s # 지표 변화를 빠르게 쫓아가기 위해, 5초 주기로 수집하는 것을 기본값으로 둡니다.
+
+scrape_configs:
+  # Prometheus server 자신에 대한 지표를 수집합니다.
+  # Prometheus server 가 사용하는 시스템 자원 사용량, 문제 현상 분석이 필요한 경우에 활용합니다.
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Grafana dashboard 에 대한 지표를 수집합니다.
+  - job_name: "grafana"
+    static_configs:
+      - targets: ["localhost:3000"]
+
+  # 성능 테스트 대상이 되는 리눅스 시스템에 대한 이용량 지표를 수집합니다.
+  - job_name: 'perf-testing'
+    static_configs:
+      - targets: ["172.31.13.109:9100"] # TODO: targets 의 IP Address 를 실제 리눅스 시스템의 것으로 변경하세요.
+        labels:
+          instance: "querypie"
+      - targets: ["172.31.62.209:9100"] # TODO: targets 의 IP Address 를 실제 리눅스 시스템의 것으로 변경하세요.
+        labels:
+          instance: "mysql"
+      - targets: ["172.31.48.27:9100"] # TODO: targets 의 IP Address 를 실제 리눅스 시스템의 것으로 변경하세요.
+        labels:
+          instance: "grafana-k6"
+
+  # Grafana-K6 성능 테스트 프로그램의 작동 지표를 수집하는 설정은 여기에 포함되어 있지 않습니다.
+  # Grafana-K6 의 작동 지표는 remote-write-receiver 기능을 통해 수집됩니다.

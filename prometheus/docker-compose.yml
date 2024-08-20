@@ -1,0 +1,33 @@
+# 지표 수집을 위한 Prometheus 서버를 실행합니다.
+# 
+# 수집하는 지표
+# - 리눅스 시스템 사용량 지표
+# - Grafana-K6 성능 테스트 프로그램의 지표
+
+services:
+  prometheus:
+    # v2.54.0 은 정상 작동을 검증한 버전입니다. 이후 버전을 사용해도 될 것으로 예상합니다.
+    image: prom/prometheus:v2.54.0
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./etc/prometheus:/etc/prometheus:ro # 호스트의 설정 디렉토리 읽기 전용으로 마운트
+      - prometheus_data:/prometheus # Prometheus 데이터 저장소
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-8d}' # 데이터 보존 기간을 환경 변수로 설정 (기본값 8일)
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle' # Prometheus의 HTTP API를 통해 Reload 가능하게 설정
+      - '--enable-feature=remote-write-receiver' # 리모트 쓰기 수신 기능 활성화
+      - '--enable-feature=native-histograms' # 네이티브 히스토그램 기능 활성화
+    environment:
+      PROMETHEUS_RETENTION: "8d" # 데이터 보존 기간을 변경할 수 있습니다.
+    ports:
+      - '9090:9090'
+    network_mode: 'host'
+
+volumes:
+  prometheus_data:
+    name: prometheus_data
