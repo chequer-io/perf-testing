@@ -1,0 +1,15 @@
+# k6 부하테스트 도구를 docker image 형태로 빌드합니다.
+# 부하테스트 도구를 실행하는 것은 bash script 를 참고하세요.
+
+services:
+  custom-k6: # grafana/xk6 를 활용하여, custom k6 binary 를 만듭니다.
+    image: custom-k6:latest
+    platform: linux/amd64
+    build:
+      context: custom-k6
+      dockerfile: Dockerfile
+  esbuild: # esbuild 를 설치한 docker image 를 만듭니다.
+    image: evanw/esbuild:latest
+    build:
+      context: esbuild
+      dockerfile: Dockerfile
