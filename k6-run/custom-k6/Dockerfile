@@ -8,7 +8,8 @@ WORKDIR /build
 # build a custom k6 binary
 RUN xk6 build \
     --with github.com/grafana/xk6-output-prometheus-remote \
-    --with github.com/grafana/xk6-sql
+    --with github.com/grafana/xk6-sql \ 
+    --with github.com/grafana/xk6-ssh 
 RUN ls -al /build
 
 
