@@ -104,6 +104,59 @@ Username, password 를 이용해 접속합니다. 허락되지 않은 이용자�
   - cd grafana
   - docker-compose down
 
+## Grafana K6 빌드하기
+
+Grafana K6 는 웹애플리케이션, API 에 대한 성능 테스트, 부하 테스트를 수행하는 오픈소스 도구입니다.
+JavaScript 로 작성된 부하생성 스크립트를 테스트 시나리오에 따라 실행하여, 대상 시스템에 부하를 줍니다.
+Grafana dashboard, Prometheus 와 함께 사용하여, 실행 지표를 모니터링하고 시각화하는 기능을
+제공합니다.
+
+Grafana K6 의 기본 기능에서는 SQL 쿼리 실행, ssh 연결 실행 등 기능을 제공하지 않습니다. 그러나 XK6 라는
+확장 기능을 통해, SQL 쿼리, ssh 연결을 수행할 수 있도록 기능을 추가할 수 있습니다.
+
+이 단계에서는 XK6 를 활용해, 확장된 기능을 가진 K6 실행프로그램을 빌드하고, docker image 형식으로
+저장합니다.
+
+`k6-run` 디렉토리에서, `docker compose build custom-k6` 명령을 수행하면, `custom-k6:latest`
+라는 docker image 가 빌드됩니다.
+
+만일, K6 에 다른 기능을 추가하고 싶은 경우, [k6-run/custom-k6/Dockerfile](k6-run/custom-k6/Dockerfile) 
+을 변경하고, `docker compose build custom-k6` 명령을 수행하면 됩니다.
+
+## TypeScript Compiler 빌드하기
+
+Grafana K6 는 JavaScript 언어로 작성된 부하생성 스크립트를 실행해 줍니다.
+
+TypeScript 언어로 부하생성 스크립트를 작성하는 것을 선호한다면, 이 TypeScript 파일을 JavaScript 파일로
+변환해 주는 과정이 필요합니다. 이를 위해, Evan Wallace 가 오픈소스로 제공하는 `esbuild`를 이용하는 방법을
+안내합니다. `esbuild`는 docker image 형태로 배포되지 않기에, 이 단계에서 docker image 를 만드는 절차를
+제공합니다.
+
+`k6-run` 디렉토리에서, `docker compose build esbuild` 명령을 수행하면, `evanw/esbuild:latest`
+라는 docker image 가 빌드됩니다.
+
+## TypeScript 부하생성 스크립트를 JavaScript 로 변환하기
+
+`k6-run/scripts` 디렉토리에서, `make all` 명령을 실행하면, 각 *.ts 파일을 *.js 라는 이름의
+JavaScript 파일로 변환해줍니다. JavaScript 변환 과정에서, 이전 단계에서 빌드한 `evanw/esbuild:latest`
+를 사용합니다.
+
+기본적으로 제공되는 [k6-run/scripts/dac.ts](k6-run/scripts/dac.ts) 파일은 
+`k6-run/scripts/dac.js` 로 변환됩니다. 이때, `dac.ts` 스크립트 코드 내에, DB 연결을 위한 uri 정보,
+credentials 를 올바르게 입력하여야 합니다.
+
+## K6 로 부하생성 스크립트를 실행하기
+
+`k6-run` 디렉토리에서, `./k6-run-dac.sh` 명령으로 이 bash script 를 실행하면, 
+docker container 방식으로 K6 가 실행되고, `K6-run/scripts/dac.js` 를 부하생성 스크립트로 사용합니다.
+
+K6 활용 가이드를 참고하여, `k6-run-dac.sh` 를 변형하거나, `dac.ts` 를 변형하여 활용할 수 있습니다.
+`k6-run-dac.sh` 파일을 복사하여, `k6-run-my-script.sh` 와 같은 bash script 를 만들고 수정하여
+사용하면 편리합니다.
+
 # 참고자료
 
+- K6 활용 가이드
+  - https://k6.io/docs/get-started/running-k6/
+  - https://weolbu.medium.com/d7c82e7fe65f
 - [QueryPie DAC 성능 테스트 시연 - 24년 8월](https://docs.google.com/presentation/d/1zltUQkTRYeWAS4JtlHN1JhZ5c-NcrGzD/edit?usp=sharing&ouid=106854970109490887766&rtpof=true&sd=true)
