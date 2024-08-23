@@ -11,8 +11,8 @@ import {Counter, Trend} from "k6/metrics"
 
 // 1. init code (call once per VU)
 
-const queryCount = new Counter("query_per_second");
-const queryFailures = new Counter("failed_queries");
+const queryCount = new Counter("query_count");
+const queryFailures = new Counter("query_failures");
 const queryDuration = new Trend("query_duration", true /* isTime */);
 
 // The second argument is a MySQL connection string, e.g.
