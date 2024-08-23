@@ -311,7 +311,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "purple",
+            "fixedColor": "blue",
             "mode": "fixed"
           },
           "custom": {
@@ -364,7 +364,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 12,
         "x": 12,
         "y": 0
@@ -390,18 +390,18 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "irate(k6_query_per_second_total[10s])",
+          "expr": "irate(k6_query_count_total[10s])",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "qps",
+          "legendFormat": "queries per second",
           "range": true,
           "refId": "A",
           "useBackend": false
         }
       ],
-      "title": "Query Per Second",
+      "title": "Query Count",
       "type": "timeseries"
     },
     {
@@ -993,10 +993,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 7
       },
       "id": 9,
       "options": {
@@ -1357,7 +1357,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.1.3",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
@@ -1390,6 +1390,107 @@
       ],
       "title": "Network Traffic Basic",
       "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 4,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 81,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "irate(k6_query_failures_total[10s])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "failures per second",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Query Failures",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -1454,7 +1555,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 18
       },
       "id": 6,
       "options": {
@@ -1495,8 +1596,8 @@
       {
         "current": {
           "selected": false,
-          "text": "prometheus",
-          "value": "ddu439d7c5xc0e"
+          "text": "perf-testing",
+          "value": "perf-testing-datasource-1"
         },
         "hide": 0,
         "includeAll": false,
@@ -1541,8 +1642,8 @@
       {
         "current": {
           "selected": false,
-          "text": "grafana-k6",
-          "value": "grafana-k6"
+          "text": "querypie",
+          "value": "querypie"
         },
         "datasource": {
           "type": "prometheus",
@@ -1583,6 +1684,6 @@
   "timezone": "browser",
   "title": "QueryPie-DAC-k6",
   "uid": "querypie-dac-k6",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
