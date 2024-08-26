@@ -29,11 +29,18 @@ Redis 의 시스템 이용 지표를 상세하게 살펴보려는 경우, 다른
 
 # 성능 테스트 소프트웨어 설치방법
 
-1. 이 디렉토리(perf-testing) 아래의 파일과 디렉토리를 .tar.gz 으로 저장합니다.
-    - cd querypie-mono
-    - git archive --format=tar.gz -o ../perf-testing.tar.gz HEAD:infra/perf-testing
-2. perf-testing.tar.gz 파일을 테스트 대상 서버에 복사하여 옮기고, 압축을 해제합니다.
-    - tar zxvf perf-testing.tar.gz
+두 가지 방법이 있습니다. 첫번째 방법, git repository 를 clone 하는 방법을 권장합니다.
+
+- 설치방법1 : perf-testing git repository 를 각 시스템에 git clone 하여 사용합니다.
+    1. 환경을 구성할 리눅스 서버에 terminal 로 접속합니다.
+    2. 계정의 홈디렉토리 또는 작업용 디렉토리에서 git clone 명령을 수행합니다.
+        - `git clone https://github.com/chequer-io/perf-testing.git`
+    3. 하위 디렉토리에 생성된 node-exporter 등 디렉토리에서 docker-compose 명령으로 container 를 실행합니다.
+
+- 설치방법2 : perf-testing.zip 파일을 내려 받아, 각 시스템에 복사하여 옮기고, 압축을 해제합니다.
+    1. [perf-testing-develop.zip](https://github.com/chequer-io/perf-testing/archive/refs/heads/develop.zip) 을 내려받습니다.
+    2. perf-testing-zip.zip 파일을 테스트 대상 서버에 복사하여 옮기고, 압축을 해제합니다.
+        - tar xvf perf-testing-develop.zip
 
 ## Node Exporter
 
