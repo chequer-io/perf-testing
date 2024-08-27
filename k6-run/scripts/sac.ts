@@ -14,10 +14,17 @@ const lsCommandTime = new Trend("ls_command_time");
 const successCount = new Counter("ssh_connection_success");
 const failureCount = new Counter("ssh_connection_failure");
 
-export function setup() {}
+const execCommandCount = new Counter("ssh_exec_commnad_count");
+
+let start, end, duration;
+
+export function init() {
+  start = 0;
+  end = 0;
+  duration = 0;
+}
 
 export default function () {
-  let start, end, duration;
 
   try {
     // SSH 연결 속도 측정
@@ -26,36 +33,47 @@ export default function () {
       username: "ec2-user",
       password: "secret-password",
       host: "host.docker.internal",
-      port: 52164,
+      port: 49363,
     });
     end = new Date(); // 연결 완료 시간
     duration = end - start; // 걸린 시간 계산 (밀리초 단위)
     connectTime.add(duration); // 메트릭에 추가
+    init(); // 초기화
 
     // 연결 성공 카운트
     successCount.add(1);
+    sleep(1);
 
     // 연결이 성공적으로 완료된 경우에만 명령어 실행
     if (ssh) {
-      // 명령어 실행 속도 측정 (pwd)
-      sleep(1);
+      // 명령어 실행 속도 측정 (pwd)      
       start = new Date(); // pwd 명령어 시작 시간
       console.log(ssh.run("pwd"));
       end = new Date(); // pwd 명령어 완료 시간
       duration = end - start; // 걸린 시간 계산
       pwdCommandTime.add(duration); // 메트릭에 추가
-
-      // 명령어 실행 속도 측정 (ls -la)
+      execCommandCount.add(1);      // Command 실행 카운트 
+      init(); // 초기화
       sleep(1);
-      start = new Date(); // ls -la 명령어 시작 시간
-      console.log(ssh.run("ls -la"));
-      end = new Date(); // ls -la 명령어 완료 시간
+
+      // 명령어 실행 속도 측정 (date)      
+      start = new Date(); // date 명령어 시작 시간
+      console.log(ssh.run("date"));
+      end = new Date(); // date 명령어 완료 시간
       duration = end - start; // 걸린 시간 계산
-      lsCommandTime.add(duration); // 메트릭에 추가
+      lsCommandTime.add(duration); // 메트릭에 추가 
+      execCommandCount.add(1);      // Command 실행 카운트 
+      init(); // 초기화
+      sleep(1);
+
+      // 세션 종료를 위해 (exit)
+      console.log(ssh.run("exit"));
+      sleep(1);
 
       // close 를 따로 구현해야 할 것 같음
       //connection.close();
     } else {
+      failureCount.add(1);
       console.error("SSH connection failed!");
     }
   } catch (error) {
@@ -63,8 +81,4 @@ export default function () {
     failureCount.add(1);
     console.error(`Error during SSH operations: ${error}`);
   }
-}
-
-export function teardown() {
-  //ssh.close();
 }
