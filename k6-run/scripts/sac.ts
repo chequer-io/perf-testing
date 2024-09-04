@@ -14,7 +14,7 @@ const lsCommandTime = new Trend("ls_command_time");
 const successCount = new Counter("ssh_connection_success");
 const failureCount = new Counter("ssh_connection_failure");
 
-const execCommandCount = new Counter("ssh_exec_commnad_count");
+const execCommandCount = new Counter("ssh_exec_command_count");
 
 let start, end, duration;
 
